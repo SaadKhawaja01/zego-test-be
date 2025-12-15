@@ -63,6 +63,7 @@ export class RoomsController {
     return this.roomsService.addParticipant(roomId, {
       userId: req.user.sub,
       displayName: body.displayName,
+      participantType: body.participantType,
       role: 'audience',
     });
   }

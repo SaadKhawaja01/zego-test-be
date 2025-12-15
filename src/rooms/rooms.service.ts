@@ -14,6 +14,7 @@ import { Participant } from './participant.schema';
 interface CreateRoomPayload {
   title: string;
   description?: string;
+  roomType: 'audio' | 'video';
   maxSeats?: number;
   hostId: string;
 }
@@ -21,6 +22,7 @@ interface CreateRoomPayload {
 interface ParticipantData {
   userId: string;
   displayName: string;
+  participantType: 'audio' | 'video';
   role?: string;
 }
 
@@ -40,8 +42,11 @@ export class RoomsService {
   ) {}
 
   async createRoom(payload: CreateRoomPayload) {
-    if (!payload.title || !payload.hostId) {
-      throw new BadRequestException('Title and hostId are required');
+    if (!payload.title || !payload.hostId || !payload.roomType) {
+      throw new BadRequestException('Title, hostId, and roomType are required');
+    }
+    if (!['audio', 'video'].includes(payload.roomType)) {
+      throw new BadRequestException('roomType must be either audio or video');
     }
     const maxSeats = payload.maxSeats || 8;
     if (maxSeats < 1 || maxSeats > 16) {

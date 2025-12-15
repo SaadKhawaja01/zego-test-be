@@ -7,6 +7,8 @@ export class Participant {
   @Prop() displayName: string;
   @Prop({ default: 'audience' }) role: string;
   @Prop({ default: false }) isMuted: boolean;
+  @Prop({ default: false }) isCameraOff?: boolean;
+  @Prop({ required: true, enum: ['audio', 'video'] }) participantType: 'audio' | 'video';
   @Prop({ default: Date.now }) joinedAt: Date;
   @Prop() leftAt?: Date;
 }
