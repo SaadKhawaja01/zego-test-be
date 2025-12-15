@@ -7,7 +7,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Room, RoomDocument } from './room.schema';
-import { AuditLog } from './audit.schema';
+
 import { Participant } from './participant.schema';
 
 
@@ -38,7 +38,7 @@ export class RoomsService {
   constructor(
     @InjectModel(Room.name) private roomModel: Model<RoomDocument>,
     @InjectModel(Participant.name) private participantModel: Model<Participant>,
-    @InjectModel(AuditLog.name) private auditModel: Model<AuditLog>,
+
   ) {}
 
   async createRoom(payload: CreateRoomPayload) {
@@ -92,12 +92,7 @@ export class RoomsService {
     room.status = 'closed';
     room.closedAt = new Date();
     await room.save();
-    await new this.auditModel({
-      roomId,
-      userId: actorUserId,
-      action: 'close_room',
-      payload: {},
-    }).save();
+
     return room;
   }
 
@@ -191,12 +186,7 @@ export class RoomsService {
     }
     room.markModified('seats');
     await room.save();
-    await new this.auditModel({
-      roomId,
-      userId: actorUserId,
-      action,
-      payload: { seatIndex: index, targetUserId },
-    }).save();
+
     return seat;
   }
 
@@ -218,12 +208,7 @@ export class RoomsService {
     if (!participant) throw new NotFoundException('Participant not found');
     participant.role = role;
     await participant.save();
-    await new this.auditModel({
-      roomId,
-      userId: actorUserId,
-      action: 'promote_demote',
-      payload: { targetUserId, role },
-    }).save();
+
     return participant;
   }
 }
